@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vector.music.dao.GiveMapper">
+    <resultMap id="BaseResultMap" type="com.vector.music.domain.Give">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="song_list_id" jdbcType="INTEGER" property="songListId"/>
+        <result column="consumer_id" jdbcType="INTEGER" property="consumerId"/>
+        <result column="type_A" jdbcType="INTEGER" property="type_A"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.vector.music.domain.Give">
+        insert into give
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="songListId != null">
+                song_list_id,
+            </if>
+            <if test="consumerId != null">
+                consumer_id,
+            </if>
+            <if test="type_A != null">
+                type_A,
+            </if>
+        </trim>
+        <trim prefix=" values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="songListId != null">
+                #{songListId},
+            </if>
+            <if test="consumerId != null">
+                #{consumerId},
+            </if>
+            <if test="type_A != null">
+                #{type_A},
+            </if>
+        </trim>
+    </insert>
+    <!-- COALESCE(sum(type),0)如果没有查到就是领-->
+    <select id="selectGiveType" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+        select COALESCE(sum(type_A), 0) as type_A
+        from give
+        where song_list_id = #{songListId}
+          and consumer_id = #{consumerId}
+    </select>
+    <!--修改点赞状态-->
+    <update id="update" parameterType="com.vector.music.domain.Give">
+        update give
+        set type_A = 1
+        where song_list_id = #{songListId}
+          and consumer_id = #{consumerId}
+    </update>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
